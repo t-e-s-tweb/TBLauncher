@@ -17,13 +17,13 @@ android {
     buildTypes {
         release {
             minifyEnabled true
-            //multiDexEnabled false
+            multiDexEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             resValue "string", "app_name_dynamic", "@string/app_name"
         }
         debug {
             minifyEnabled false
-            //multiDexEnabled true
+            multiDexEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             applicationIdSuffix '.debug'
             versionNameSuffix '-dbg'
@@ -78,7 +78,7 @@ dependencies {
     implementation('com.github.dhaval2404:imagepicker:2.1', {
         exclude group: 'com.squareup.okhttp3'
     })
-    //implementation "androidx.multidex:multidex:$multidex_version"
+    implementation "androidx.multidex:multidex:$multidex_version"
 }
 repositories {
     mavenCentral()
