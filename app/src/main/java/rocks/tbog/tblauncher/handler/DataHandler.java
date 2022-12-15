@@ -25,6 +25,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -579,7 +580,9 @@ public class DataHandler extends BroadcastReceiver
             List<? extends EntryItem> pojos = entry.provider.getPojos();
             if (pojos == null)
                 continue;
-            boolean accept = searcher.addResult(pojos.toArray(new EntryItem[0]));
+            for (var item : pojos)
+                item.resetResultInfo();
+            boolean accept = searcher.addResult(pojos);
             // if searcher will not accept any more results, exit
             if (!accept)
                 break;
@@ -608,12 +611,12 @@ public class DataHandler extends BroadcastReceiver
      *
      * @param itemCount          max number of items to retrieve, total number may be less (search or calls are not returned for instance)
      * @param historyMode        Recency vs Frecency vs Frequency vs Adaptive
-     * @param sortHistory        Sort history entries alphabetically
+     * @param sortByName         Sort history entries alphabetically
      * @param itemsToExcludeById Items to exclude from history by their id
      * @return pojos in recent history
      */
     public List<EntryItem> getHistory(int itemCount, DBHelper.HistoryMode historyMode,
-                                      boolean sortHistory, Set<String> itemsToExcludeById) {
+                                      boolean sortByName, Set<String> itemsToExcludeById) {
         // Max sure that we get enough items, regardless of how many may be excluded
         int extendedItemCount = itemCount + itemsToExcludeById.size();
 
@@ -639,12 +642,37 @@ public class DataHandler extends BroadcastReceiver
         }
 
         // sort the list if needed
-        if (sortHistory)
+        if (sortByName)
             Collections.sort(history, (a, b) -> a.getName().compareTo(b.getName()));
 
         // enforce item count after the sort operation
         if (history.size() > itemCount)
             history.subList(itemCount, history.size()).clear();
+
+        return history;
+    }
+
+    public Map<EntryItem, Integer> getHistoryOrder(DBHelper.HistoryMode historyMode, Set<String> itemsToExcludeById) {
+        // Read history
+        final Context context = getContext();
+        List<ValuedHistoryRecord> ids = DBHelper.getHistory(context, Integer.MAX_VALUE, historyMode);
+
+        // Pre-allocate array slots that are likely to be used
+        HashMap<EntryItem, Integer> history = new HashMap<>(ids.size());
+
+        // Find associated items
+        for (int i = 0; i < ids.size(); i++) {
+            // Ask all providers if they know this id
+            EntryItem entryItem = getPojo(ids.get(i).record);
+
+            if (entryItem == null)
+                continue;
+
+            if (itemsToExcludeById.contains(entryItem.id))
+                continue;
+
+            history.put(entryItem, i);
+        }
 
         return history;
     }
@@ -1067,7 +1095,11 @@ public class DataHandler extends BroadcastReceiver
             }
         }
 
-        // refresh relevant providers
+        afterQuickListChanged();
+    }
+
+    public void afterQuickListChanged() {
+        // refresh relevant providers for the Dock
         {
             IProvider<?> provider = getModProvider();
             if (provider != null)
