@@ -41,4 +41,9 @@ public class DebugInfo {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getBoolean("debug-item-icon-info", false);
     }
+
+    public static boolean itemTagInfo(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getBoolean("debug-item-tag-info", false);
+    }
 }

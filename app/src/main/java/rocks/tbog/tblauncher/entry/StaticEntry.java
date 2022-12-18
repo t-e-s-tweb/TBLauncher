@@ -26,6 +26,7 @@ import rocks.tbog.tblauncher.result.AsyncSetEntryDrawable;
 import rocks.tbog.tblauncher.result.ResultViewHelper;
 import rocks.tbog.tblauncher.ui.LinearAdapter;
 import rocks.tbog.tblauncher.ui.ListPopup;
+import rocks.tbog.tblauncher.utils.DebugInfo;
 import rocks.tbog.tblauncher.utils.DialogHelper;
 import rocks.tbog.tblauncher.utils.PrefCache;
 import rocks.tbog.tblauncher.utils.UIColors;
@@ -75,7 +76,12 @@ public abstract class StaticEntry extends EntryItem {
         } else if (titleStringId == R.string.menu_popup_title_settings) {
             adapter.add(new LinearAdapter.Item(context, R.string.menu_quick_list_remove));
             adapter.add(new LinearAdapter.Item(context, R.string.menu_popup_quick_list_customize));
+        } else if (titleStringId == R.string.popup_title_debug) {
+            if (DebugInfo.itemIconInfo(context)) {
+                adapter.add(new LinearAdapter.ItemString("customIcon: " + customIcon));
+            }
         }
+
     }
 
     @Override

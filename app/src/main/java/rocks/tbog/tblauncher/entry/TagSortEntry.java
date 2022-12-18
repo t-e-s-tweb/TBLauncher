@@ -13,6 +13,7 @@ import rocks.tbog.tblauncher.TBApplication;
 import rocks.tbog.tblauncher.searcher.SortedTagSearcher;
 import rocks.tbog.tblauncher.ui.LinearAdapter;
 import rocks.tbog.tblauncher.ui.ListPopup;
+import rocks.tbog.tblauncher.utils.DebugInfo;
 
 public class TagSortEntry extends TagEntry {
     public static final String SORT_AZ = "sort/byName/";
@@ -40,6 +41,16 @@ public class TagSortEntry extends TagEntry {
         } else {
             super.setName(name);
         }
+    }
+
+    @Override
+    protected void buildPopupMenuCategory(Context context, @NonNull LinearAdapter adapter, int titleStringId) {
+        if (titleStringId == R.string.popup_title_debug) {
+            if (DebugInfo.itemTagInfo(context)) {
+                adapter.add(new LinearAdapter.ItemString("order: " + getTagSortOrder(id)));
+            }
+        }
+        super.buildPopupMenuCategory(context, adapter, titleStringId);
     }
 
     @Override
