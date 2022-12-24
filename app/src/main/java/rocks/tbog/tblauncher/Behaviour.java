@@ -974,7 +974,7 @@ public class Behaviour implements ISearchActivity {
             if (!state.isResultListVisible() && state.getDesktop() == LauncherState.Desktop.SEARCH)
                 showResultList(false);
         }
-        mResultAdapter.updateResults(results);
+        mResultAdapter.updateItems(results);
 
         if (!isRefresh) {
             // Make sure the first item is visible when we search
@@ -989,7 +989,7 @@ public class Behaviour implements ISearchActivity {
     @Override
     public void removeResult(@NonNull EntryItem result) {
         // Do not reset scroll, we want the remaining items to still be in view
-        mResultAdapter.removeResult(result);
+        mResultAdapter.removeItem(result);
     }
 
     @Override
