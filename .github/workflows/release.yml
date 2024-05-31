@@ -32,8 +32,11 @@ jobs:
       - name: Build debug APK
         run: bash ./gradlew assembleGithubRelease --stacktrace
         
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@2.7.0
         with:
-          name: app
-          path: app/build/outputs/apk/github/release/app-github-release.apk
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: app/build/outputs/apk/github/release/*.apk
+          tag: ${{ github.ref }}
+          overwrite: true
+          file_glob: true
