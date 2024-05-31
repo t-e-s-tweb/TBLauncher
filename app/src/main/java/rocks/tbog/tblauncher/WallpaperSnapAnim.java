@@ -116,7 +116,7 @@ class WallpaperSnapAnim extends Animation {
             stickToBottom = y >= bottomStickPercent;
         }
 
-        public void removeDiagonals(float x, float y) {*/
+        public void removeDiagonals(float x, float y) {/*
             if (stickToTop) {
                 // don't stick to the top-left or top-right corner
                 if (stickToLeft) {
